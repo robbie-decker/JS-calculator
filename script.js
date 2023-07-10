@@ -1,60 +1,92 @@
 const numbers = document.querySelectorAll('.numbers');
+const operations = document.querySelectorAll('.operation')
 const clearButton = document.getElementById("clear");
-const display = document.getElementById('display');
+const currentDisplay = document.getElementById('currentOperation');
+const prevDisplay = document.getElementById('prevOperation');
+const equalsButton = document.getElementById('equals');
 
 let displayNumber;
+let previousNumber;
+let currentOperation = null;
+let shouldEvaluate = true;
 
 // we use the .forEach method to iterate through each number
 numbers.forEach((number) => {
   // and for each one we add a 'click' listener
   number.addEventListener('click', () => {
-  display.textContent = display.textContent + number.textContent;
-  displayNumber = +display.textContent
-  console.log(displayNumber);
+    // User has now inputted a new number. WE CAN EVALUATE
+    if(shouldEvaluate === false){
+      currentDisplay.textContent = "";
+      shouldEvaluate = true;
+    }
+    currentDisplay.textContent += number.textContent;
+    displayNumber = +currentDisplay.textContent;
   });
 });
 
-clearButton.addEventListener('click', () => {
-  display.textContent = "";
-  displayNumber = 0;
+operations.forEach((operation) => {
+  operation.addEventListener("click", () => {
+    if(previousNumber === undefined){
+      previousNumber = displayNumber;
+    }
+    if(currentOperation !== null){
+      evaluate();
+    }
+    currentOperation = operation.textContent;
+    previousNumber = displayNumber;
+    // User has not input a new number yet
+    shouldEvaluate = false;
+  });
 });
 
+equalsButton.addEventListener('click', evaluate);
+
+clearButton.addEventListener('click', () => {
+  currentDisplay.textContent = "";
+  currentOperation = null;
+  displayNumber = undefined;
+  previousNumber = undefined;
+});
+
+
+function evaluate(){
+  // Want to only evaluate if a new number is pressed. Wait until then
+  if(currentOperation === null || shouldEvaluate === false) return;
+
+  console.log(`currentDisplay: ${displayNumber}   prev: ${previousNumber}  currentOP: ${currentOperation}`);
+  displayNumber = operate(currentOperation, displayNumber, previousNumber);
+  currentDisplay.textContent = displayNumber;
+  previousNumber = displayNumber; 
+  currentOperation = null;
+}
 
 function add(a, b) {
     return a + b;
 }
   
 function subtract(a, b) {
-    return a - b;
+    return b - a;
 }
   
-function sum(array) {
-    return array.reduce((total, current) => total + current, 0);
-}
-  
-function multiply(array) {
-   return a * b;
+function multiply(a, b) {
+  let myNum = a * b;
+  return Math.round((myNum + Number.EPSILON) * 1000) / 1000
 }
 
 function divide(a, b){
-    return a / b;
+    let myNum = b / a;
+    return Math.round((myNum + Number.EPSILON) * 1000) / 1000
 }
 
 function operate(operator, a, b){
   switch(operator){
     case "+":
-      add(a,b)
-      break;
+      return add(a,b);
     case "-":
-      subtract(a,b);
-      break;
+      return subtract(a,b);
     case "*":
-      multiply(a,b)
-      break;
+      return multiply(a,b)
     case "/":
-      divide(a,b)
-      break;
+      return divide(a,b)
   }
 }
-
-// 

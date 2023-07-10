@@ -7,14 +7,31 @@ body{
 
 #calculator{
     background-color: gray;
+    max-width: 400px;
+    width: 100%;
 }
 
 #display{
+    background-color: antiquewhite;
     height: 50px;
+    text-align: right;
+    padding-top: 20px;
+    padding-right: 20px;
+    margin: 20px;
+    font-size: 30px;
 }
 
 #buttons{
     display: grid;
-    grid-template-columns: 50px 50px 50px 50px;
+    grid-template-columns: 24% 24% 24% 24%;
     grid-template-rows: auto;
+    gap: 5px;
+    justify-content: center;
+    align-content: center;
+    margin: 20px;
+}
+
+#buttons button{
+    padding: 15px;
+    font-size: 20px;
 }
